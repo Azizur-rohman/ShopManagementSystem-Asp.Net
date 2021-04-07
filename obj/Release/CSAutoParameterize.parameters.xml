@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="DefaultConnection-Web.config Connection String" description="DefaultConnection Connection String used in web.config by the application to access the database." defaultValue="Data Source=(LocalDb)\v11.0;AttachDbFilename=|DataDirectory|\aspnet-PointOfSale-20191221050436.mdf;Initial Catalog=aspnet-PointOfSale-20191221050436;Integrated Security=True" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="E:\\Asp\.net\ application\\POS\\Shop\ Management\ System\\Shop\ Management\ System\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='DefaultConnection']/@connectionString" />
+  </parameter>
+  <parameter name="ShopManagementSystemEntities-Web.config Connection String" description="ShopManagementSystemEntities Connection String used in web.config by the application to access the database." defaultValue="metadata=res://*/Models.Model1.csdl|res://*/Models.Model1.ssdl|res://*/Models.Model1.msl;provider=System.Data.SqlClient;provider connection string=&quot;Server=tcp:shopmanagement123.database.windows.net,1433;Initial Catalog=Shop Management System_db;Persist Security Info=False;User ID=ShopManagementSystem;Password={your_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;&quot;" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="E:\\Asp\.net\ application\\POS\\Shop\ Management\ System\\Shop\ Management\ System\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='ShopManagementSystemEntities']/@connectionString" />
+  </parameter>
+</parameters>

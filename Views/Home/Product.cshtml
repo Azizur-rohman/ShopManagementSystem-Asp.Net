@@ -1,0 +1,204 @@
+﻿@model Shop_Management_System.Models.Product
+
+@{ ViewBag.Title = "Product"; }
+
+<div class="col-xl-12 col-md-12 mb-12">
+    <div class="card border-left-primary shadow h-100 py-2">
+        <div class="card-body">
+            <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+
+                    <form class="user">
+
+                        <div class="form-group col-md-6">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Create Product</div>
+                        </div>
+                        <input type="hidden" id="productId" />
+                        <div class="form-group col-md-6">
+                            @Html.LabelFor(model => model.ProductName, htmlAttributes: new { @class = "control-label col-md-4" })
+
+                            <input type="text" class="form-control form-control-user" id="productName" aria-describedby="emailHelp" placeholder="Product Name">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="control-label col-md-4">Category Name</label>
+                            <select class="form-control" id="categoryId"></select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            @Html.LabelFor(model => model.BatchId, htmlAttributes: new { @class = "control-label col-md-2" })
+
+                            <select class="form-control" id="batchId"></select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            @Html.LabelFor(model => model.Price, htmlAttributes: new { @class = "control-label col-md-4" })
+
+                            <input type="number" class="form-control form-control-user" id="price" aria-describedby="emailHelp" placeholder="Price">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="control-label col-md-4">Status</label>
+                            <select class="form-control" id="status">
+                                <option>--Select--</option>
+                                <option value="1">Active</option>
+                                <option value="0">Inactive</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <a href="#" onclick="SaveProduct()" class="btn btn-primary btn-sm">
+                                Save
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<div class="col-xl-12 col-md-12 mb-12">
+    <div class="card border-left-primary shadow h-100 py-2">
+        <div class="card-body">
+            <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                    <div class="form-group col-md-6">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Product List</div>
+                    </div>
+
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Category Name</th>
+                                <th>Batch ID</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                                <th>CreateDate</th>
+                                <th>
+                                    Action
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="trDiv"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        GetAllProduct();
+        GetAllGetegory();
+        GetAllBatch();
+    });
+    function GetAllBatch() {
+        $.ajax({
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            type: 'Get',
+            url: "/Home/GetAllBatch",
+            success: function (data) {
+                $("#batchId").html('');
+                var tdContent = '';
+                for (var i = 0; i < data.length; i++) {
+                    tdContent += '<option value="' + data[i].BatchName + '">' + data[i].BatchName + '</option>'; // if Name is property of your Person object
+                }
+                $("#batchId").append(tdContent);
+            },
+            error: function () {
+                alert("Error!")
+            }
+        });
+    }
+
+    function SaveProduct() {
+        var product = new Object();
+        product.ProductId = $("#productId").val();
+        product.CategoryId = $("#categoryId").val();
+        product.ProductName = $("#productName").val();
+        product.BatchId = $("#batchId").val();
+        product.Price = $("#price").val();
+        product.Status = $("#status").val();
+        var data = JSON.stringify({
+            product: product
+        });
+        return $.ajax({
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            type: 'POST',
+            url: "/Home/SaveProduct",
+            data: data,
+            success: function (result) {
+                if (result == true) {
+                    GetAllProduct();
+                    Reset();
+                    alert("Save Success!");
+                }
+                else {
+                    alert("Save failed!");
+                }
+            },
+            error: function () {
+                alert("Error!")
+            }
+        });
+    }
+
+    function GetAllProduct() {
+        $.ajax({
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            type: 'Get',
+            url: "/Home/GetAllProduct",
+            success: function (data) {
+                $("#trDiv").html('');
+                var tdContent = '';
+                for (var i = 0; i < data.length; i++) {
+                    var statuName = "";
+                    if (data[i].Status == 1) {
+                        statusName = "Active";
+                    }
+                    else {
+                        statusName = "Inactive";
+                    }
+                    tdContent += '<tr><td>' + data[i].ProductName + '</td>' + '<td>' + data[i].CategoryName + '</td>' + '<td>' + data[i].BatchId + '</td>' + '<td>' + data[i].Price + '</td>' + '<td>' + statusName + '</td>' + '<td>' + data[i].CreateDate + '</td>' + '<td><a href="#" onclick="Edit(' + data[i].ProductId + "," + data[i].CategoryId + ",'" + data[i].ProductName + "'," + ",'" + data[i].BatchId + "'," + ",'" + data[i].Price + "'," + data[i].Status + ');">Edit</a></td></tr>'; // if Name is property of your Person object
+                }
+                $("#trDiv").append(tdContent);
+            },
+            error: function () {
+                alert("Error!")
+            }
+        });
+    }
+    function GetAllGetegory() {
+        $.ajax({
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            type: 'Get',
+            url: "/Home/GetAllGetegory",
+            success: function (data) {
+                $("#categoryId").html('');
+                var tdContent = '';
+                for (var i = 0; i < data.length; i++) {
+                    tdContent += '<option value="' + data[i].CategoryId + '">' + data[i].Name + '</option>'; // if Name is property of your Person object
+                }
+                $("#categoryId").append(tdContent);
+            },
+            error: function () {
+                alert("Error!")
+            }
+        });
+    }
+    function Edit(productId, catId, name, price, status) {
+        $("#productId").val(productId);
+        $("#categoryId").val(catId);
+        $("#productName").val(name);
+        $("#price").val(price);
+        $("#status").val(status);
+    }
+    function Reset() {
+        $("#productId").val(null);
+        $("#categoryId").val(null);
+        $("#productName").val(null);
+        $("#batchId").val(null);
+        $("#price").val(null);
+        $("#status").val(null);
+    }</script>
